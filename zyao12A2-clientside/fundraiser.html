@@ -22,17 +22,33 @@
     fetch(`http://localhost:3000/fundraiser/${id}`)
         .then(response => response.json())
         .then(data => {
+            // Determine status and category name
+            const status = data.ACTIVE ? 'Active' : 'Inactive';
+            const categoryName = getCategoryName(data.CATEGORY_ID);
+
             document.getElementById('fundraiserDetail').innerHTML = `
                 <h2>${data.CAPTION}</h2>
                 <p>Organizer: ${data.ORGANIZER}</p>
                 <p>Target Funding: ${data.TARGET_FUNDING} AUD</p>
                 <p>Current Funding: ${data.CURRENT_FUNDING} AUD</p>
                 <p>City: ${data.CITY}</p>
+                <p>Status: ${status}</p>
+                <p>Category: ${categoryName}</p>
                 <button onclick="alert('This feature is under construction')">Donate</button>
                 <p>Username: zyao12</p>
             `;
         })
         .catch(err => console.error(err));
+
+    // Function to get category name from category ID
+    function getCategoryName(categoryId) {
+        switch (categoryId) {
+            case 1: return 'Medical';
+            case 2: return 'Education';
+            case 3: return 'Social Impact';
+            default: return 'Unknown Category';
+        }
+    }
 </script>
 </body>
 </html>

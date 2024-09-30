@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
+    <title>Index</title>
     <style>
-        body { font-family: Arial, sans-serif; }
+        body { font-family: Arial, sans-serif; margin: 15px; }
         header { text-align: center; margin-bottom: 14px; }
         nav a { margin: 0 13px; }
         #username { font-weight: bold; color: rgba(0, 123, 255, 0.95); }
+        #organizationInfo { margin-bottom: 20px; }
+        #fundraisers { margin-top: 20px; }
+        #fundraiserList { list-style-type: none; padding: 0; }
+        #fundraiserList li { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
     </style>
 </head>
 <body>
 <header>
-    <h1>Welcome to access the Non-Profit Donation Organization</h1>
+    <h1>Welcome to the Non-Profit Donation Organization</h1>
     <p>We are waiting for your help</p>
     <p>User: <span id="username">zyao12</span></p>
     <nav>
@@ -28,24 +32,40 @@
 </section>
 
 <script>
+    // Fetch fundraisers and their categories from the API
     fetch('http://localhost:3000/fundraisers')
         .then(response => response.json())
         .then(data => {
             const list = document.getElementById('fundraiserList');
             data.forEach(fundraiser => {
                 const item = document.createElement('li');
+                const categoryName = fundraiser.CATEGORY_ID ? getCategoryName(fundraiser.CATEGORY_ID) : 'Not Specified';
+                const status = fundraiser.ACTIVE ? 'Active' : 'Inactive';
+
                 item.innerHTML = `
                     <strong>${fundraiser.CAPTION}</strong><br>
                     Organizer: ${fundraiser.ORGANIZER}<br>
-                    Target Funding: ${fundraiser.TARGET_FUNDING} AUD Dollar<br>
-                    Current Funding: ${fundraiser.CURRENT_FUNDING} AUD Dollar<br>
+                    Target Funding: ${fundraiser.TARGET_FUNDING} AUD<br>
+                    Current Funding: ${fundraiser.CURRENT_FUNDING} AUD<br>
                     City: ${fundraiser.CITY}<br>
+                    Status: ${status}<br>
+                    Category: ${categoryName}<br>
                     <a href="fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>
                 `;
                 list.appendChild(item);
             });
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error('Error fetching fundraisers:', err));
+
+    // Function to get category name based on CATEGORY_ID
+    function getCategoryName(categoryId) {
+        switch (categoryId) {
+            case 1: return 'Medical';
+            case 2: return 'Education';
+            case 3: return 'Social Impact';
+            default: return 'Unknown';
+        }
+    }
 </script>
 </body>
 </html>
